@@ -5,11 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Barcode Scanner</title>
     <script src="https://unpkg.com/@zxing/library@latest"></script>
+    <style>
+        video {
+            width: 100%; /* Para ocupar a largura total do dispositivo */
+            height: auto; /* Para manter a proporção */
+            border: 1px solid black;
+        }
+    </style>
 </head>
 <body>
     <h1>Barcode Scanner</h1>
-    <video id="video" width="300" height="200" style="border: 1px solid black"></video>
-    <button id="startButton">Start Scanning</button>
+    <video id="video"></video>
+    <button id="startButton">ESCANIAR</button>
     <p id="result"></p>
 
     <script>
@@ -19,6 +26,7 @@
         const startButton = document.getElementById('startButton');
 
         startButton.addEventListener('click', () => {
+            console.log('Start button clicked'); // Log para verificar o clique
             codeReader.decodeFromVideoDevice(null, videoElement, (result, err) => {
                 if (result) {
                     resultElement.textContent = `Barcode result: ${result.text}`;
@@ -30,7 +38,6 @@
                 }
             });
         });
-        
     </script>
 </body>
 </html>
