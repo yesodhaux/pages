@@ -4,6 +4,13 @@ import { JSDOM } from 'jsdom';
 
 const app = express();
 
+// Middleware para adicionar cabeçalhos CORS
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*'); // Permite todas as origens
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    next();
+});
+
 app.get('/buscar-informacoes', async (req, res) => {
     const codigo = req.query.codigo;
     const url = `https://www.saojoaofarmacias.com.br/${codigo}`;
