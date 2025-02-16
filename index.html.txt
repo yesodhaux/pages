@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leitor de Código de Barras</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+    <style>
+        #interactive {
+            width: 100%;
+            height: auto;
+        }
+        #result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Leitor de Código de Barras</h1>
+    <div id="interactive" class="viewport"></div>
+    <div id="result">Resultado: <span id="barcode-result"></span></div>
+
+    <script>
+       () {
+            Quagga.init({
+                inputStream: {
+                    name: "Live",
+                    type: "LiveStream",
+                    target: document.querySelector('#interactive')    // Or '#yourElement' (optional)
+                },
+                decoder: {
+                    readers: ["code_128_reader"] // Você pode adicionar outros leitores aqui
+                }
+            }, function(err) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                console.log("Quagga inicializado com sucesso");
+                Quagga.start();
+            });
+
+            Quagga.onDetected(function(data) {
+                var code = data.codeResult.code;
+                document.getElementById('barcode-result').innerText = code;
+                console.log("Código de barras detectado: " + code);
+            });
+        });
+    </script>
+</body>
+</html>
