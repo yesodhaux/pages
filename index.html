@@ -1,160 +1,39 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comparação de Produtos</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f4f9;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        .container {
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 15px;
-            width: 100%;
-            max-width: 340px;
-        }
-
-        h2 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 22px;
-        }
-
-        .card {
-            background: #f9f9fb;
-            border: 1px solid #e0e0e5;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-        }
-
-        .card h3 {
-            text-align: center;
-            color: #555;
-            margin-bottom: 10px;
-            font-size: 18px;
-        }
-
-        .input-group {
-            margin-bottom: 10px;
-        }
-
-        .input-group label {
-            display: block;
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 3px;
-        }
-
-        .input-group input {
-            width: 90%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-
-        button {
-            width: 70%;
-            padding: 10px;
-            background: #4CAF50;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background 0.3s;
-            margin: 0 auto;
-            display: block;
-        }
-
-        button:hover {
-            background: #45a049;
-        }
-
-        #resultado {
-            margin-top: 15px;
-            padding: 10px;
-            background: #e8f5e9;
-            color: #2e7d32;
-            border: 1px solid #c8e6c9;
-            border-radius: 5px;
-            text-align: center;
-            font-weight: bold;
-            font-size: 14px;
-        }
-    </style>
+    <title>Buscar Informações</title>
 </head>
 <body>
-    <div class="container">
-        <h2>Comparação de Produtos</h2>
-        
-        <div class="card">
-            <h3>Produto 1</h3>
-            <div class="input-group">
-                <label for="preco1">Preço:</label>
-                <input type="number" id="preco1" placeholder="Ex: 10.50" step="0.01" required>
-            </div>
-            <div class="input-group">
-                <label for="quantidade1">Quantidade:</label>
-                <input type="number" id="quantidade1" placeholder="Ex: 500" required>
-            </div>
-        </div>
-        
-        <div class="card">
-            <h3>Produto 2</h3>
-            <div class="input-group">
-                <label for="preco2">Preço:</label>
-                <input type="number" id="preco2" placeholder="Ex: 8.99" step="0.01" required>
-            </div>
-            <div class="input-group">
-                <label for="quantidade2">Quantidade:</label>
-                <input type="number" id="quantidade2" placeholder="Ex: 400" required>
-            </div>
-        </div>
-
-        <button onclick="comparar()">Comparar</button>
-        <p id="resultado"></p>
+    <h1>Buscar Informações da Página Alvo</h1>
+    <form id="codigoForm">
+        <label for="codigo">Insira o código:</label>
+        <input type="text" id="codigo" name="codigo" required>
+        <button type="submit">Buscar</button>
+    </form>
+    <div id="resultados">
+        <p>Resultado 1: <span id="resultado1"></span></p>
+        <p>Resultado 2: <span id="resultado2"></span></p>
     </div>
-
     <script>
-        function comparar() {
-            const preco1 = parseFloat(document.getElementById("preco1").value);
-            const quantidade1 = parseFloat(document.getElementById("quantidade1").value);
-            const preco2 = parseFloat(document.getElementById("preco2").value);
-            const quantidade2 = parseFloat(document.getElementById("quantidade2").value);
+        document.getElementById('codigoForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const codigo = document.getElementById('codigo').value;
+            const url = `http://localhost:3000/buscar-informacoes?codigo=${codigo}`;
 
-            if (isNaN(preco1) || isNaN(quantidade1) || isNaN(preco2) || isNaN(quantidade2)) {
-                alert("Por favor, preencha todos os campos.");
-                return;
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                document.getElementById('resultado1').textContent = data.resultado1;
+                document.getElementById('resultado2').textContent = data.resultado2;
+            } catch (error) {
+                console.error('Erro ao buscar as informações:', error);
+                document.getElementById('resultado1').textContent = 'Erro ao buscar informações';
+                document.getElementById('resultado2').textContent = 'Erro ao buscar informações';
             }
-
-            const custoUnidade1 = preco1 / quantidade1;
-            const custoUnidade2 = preco2 / quantidade2;
-
-            let resultado = "";
-            if (custoUnidade1 < custoUnidade2) {
-                resultado = "Produto 1 é mais barato por unidade.";
-            } else if (custoUnidade1 > custoUnidade2) {
-                resultado = "Produto 2 é mais barato por unidade.";
-            } else {
-                resultado = "Ambos os produtos têm o mesmo custo por unidade.";
-            }
-
-            document.getElementById("resultado").innerText = resultado;
-        }
+        });
     </script>
 </body>
 </html>

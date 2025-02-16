@@ -1,5 +1,7 @@
-const express = require('express');
-const fetch = require('node-fetch');
+import express from 'express';
+import fetch from 'node-fetch';
+import { JSDOM } from 'jsdom';
+
 const app = express();
 
 app.get('/buscar-informacoes', async (req, res) => {
@@ -9,8 +11,8 @@ app.get('/buscar-informacoes', async (req, res) => {
     try {
         const response = await fetch(url);
         const htmlText = await response.text();
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(htmlText, 'text/html');
+        const dom = new JSDOM(htmlText);
+        const doc = dom.window.document;
         const resultado1 = doc.querySelector('.sjdigital-custom-apps-5-x-currencyInteger').textContent.trim();
         const resultado2 = doc.querySelector('.sjdigital-custom-apps-5-x-currencyFraction').textContent.trim();
 
