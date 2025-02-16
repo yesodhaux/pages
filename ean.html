@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extrair Informações</title>
+</head>
+<body>
+    <h1>Extrair Valores da Página</h1>
+    <input type="text" id="codigo" placeholder="Digite o código" />
+    <button id="fetchButton">Buscar Valores</button>
+    <div id="output"></div>
+
+    <script>
+        document.getElementById('fetchButton').addEventListener('click', () => {
+            const codigo = document.getElementById('codigo').value;
+            const url = `https://www.saojoaofarmacias.com.br/${codigo}`;
+
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erro ao buscar a página');
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(data, 'text/html');
+
+                    const valorInteger = doc.querySelector('.sjdigital-custom-apps-5-x-currencyInteger');
+                    const valorFraction = doc.querySelector('.sjdigital-custom-apps-5-x-currencyFraction');
+
+                    const integerValue = valorInteger ? valorInteger.innerText : 'Valor inteiro não encontrado';
+                    const fractionValue = valorFraction ? valorFraction.innerText : 'Valor fracionário não encontrado';
+
+                    document.getElementById('output').innerHTML = `
+                        <p>Valor Inteiro: ${integerValue}</p>
+                        <p>Valor Fracionário: ${fractionValue}</p>
+                    `;
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    document.getElementById('output').innerText = 'Erro ao buscar os dados. Verifique a URL ou o código.';
+                });
+        });
+    </script>
+</body>
+</html>
