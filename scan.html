@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barcode Scanner</title>
+    <script src="https://unpkg.com/@zxing/library@latest"></script>
+</head>
+<body>
+    <h1>Barcode Scanner</h1>
+    <video id="video" width="300" height="200" style="border: 1px solid black"></video>
+    <button id="startButton">Start Scanning</button>
+    <p id="result"></p>
+
+    <script>
+        const codeReader = new ZXing.BrowserBarcodeReader();
+        const videoElement = document.getElementById('video');
+        const resultElement = document.getElementById('result');
+        const startButton = document.getElementById('startButton');
+
+        startButton.addEventListener('click', () => {
+            codeReader.decodeFromVideoDevice(null, videoElement, (result, err) => {
+                if (result) {
+                    resultElement.textContent = `Barcode result: ${result.text}`;
+                    codeReader.reset();
+                }
+                if (err && !(err instanceof ZXing.NotFoundException)) {
+                    console.error(err);
+                    resultElement.textContent = `Error: ${err}`;
+                }
+            });
+        });
+        
+    </script>
+</body>
+</html>
