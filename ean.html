@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buscar Informações</title>
+    <title>Buscar Informações v2</title>
 </head>
 <body>
     <h1>Buscar Informações da Página Alvo</h1>
@@ -20,18 +20,31 @@
         document.getElementById('codigoForm').addEventListener('submit', async function(event) {
             event.preventDefault();
             const codigo = document.getElementById('codigo').value;
-            const url = `https://www.saojoaofarmacias.com.br/${codigo}`;
+            const url = `https://cors-anywhere.herokuapp.com/https://www.saojoaofarmacias.com.br/${codigo}`;
+
+            console.log('URL:', url);
 
             try {
                 const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
                 const htmlText = await response.text();
+                console.log('HTML Text:', htmlText);
+
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(htmlText, 'text/html');
-                const resultado1 = doc.querySelector('.sjdigital-custom-apps-5-x-currencyInteger').textContent.trim();
-                const resultado2 = doc.querySelector('.sjdigital-custom-apps-5-x-currencyFraction').textContent.trim();
 
-                document.getElementById('resultado1').textContent = resultado1;
-                document.getElementById('resultado2').textContent = resultado2;
+                const resultado1 = doc.querySelector('.sjdigital-custom-apps-5-x-currencyInteger')?.textContent.trim();
+                const resultado2 = doc.querySelector('.sjdigital-custom-apps-5-x-currencyFraction')?.textContent.trim();
+
+                if (resultado1 && resultado2) {
+                    document.getElementById('resultado1').textContent = resultado1;
+                    document.getElementById('resultado2').textContent = resultado2;
+                } else {
+                    document.getElementById('resultado1').textContent = 'Informação não encontrada';
+                    document.getElementById('resultado2').textContent = 'Informação não encontrada';
+                }
             } catch (error) {
                 console.error('Erro ao buscar as informações:', error);
                 document.getElementById('resultado1').textContent = 'Erro ao buscar informações';
