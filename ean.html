@@ -1,47 +1,42 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Extrair Informações</title>
+    <title>Buscar Informações</title>
 </head>
 <body>
-    <h1>Extrair Valores da Página</h1>
-    <input type="text" id="codigo" placeholder="Digite o código" />
-    <button id="fetchButton">Buscar Valores</button>
-    <div id="output"></div>
-
+    <h1>Buscar Informações da Página Alvo</h1>
+    <form id="codigoForm">
+        <label for="codigo">Insira o código:</label>
+        <input type="text" id="codigo" name="codigo" required>
+        <button type="submit">Buscar</button>
+    </form>
+    <div id="resultados">
+        <p>Resultado 1: <span id="resultado1"></span></p>
+        <p>Resultado 2: <span id="resultado2"></span></p>
+    </div>
     <script>
-        document.getElementById('fetchButton').addEventListener('click', () => {
+        document.getElementById('codigoForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
             const codigo = document.getElementById('codigo').value;
             const url = `https://www.saojoaofarmacias.com.br/${codigo}`;
 
-            fetch(url)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Erro ao buscar a página');
-                    }
-                    return response.text();
-                })
-                .then(data => {
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(data, 'text/html');
+            try {
+                const response = await fetch(url);
+                const htmlText = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(htmlText, 'text/html');
+                const resultado1 = doc.querySelector('.sjdigital-custom-apps-5-x-currencyInteger').textContent.trim();
+                const resultado2 = doc.querySelector('.sjdigital-custom-apps-5-x-currencyFraction').textContent.trim();
 
-                    const valorInteger = doc.querySelector('.sjdigital-custom-apps-5-x-currencyInteger');
-                    const valorFraction = doc.querySelector('.sjdigital-custom-apps-5-x-currencyFraction');
-
-                    const integerValue = valorInteger ? valorInteger.innerText : 'Valor inteiro não encontrado';
-                    const fractionValue = valorFraction ? valorFraction.innerText : 'Valor fracionário não encontrado';
-
-                    document.getElementById('output').innerHTML = `
-                        <p>Valor Inteiro: ${integerValue}</p>
-                        <p>Valor Fracionário: ${fractionValue}</p>
-                    `;
-                })
-                .catch(error => {
-                    console.error('Erro:', error);
-                    document.getElementById('output').innerText = 'Erro ao buscar os dados. Verifique a URL ou o código.';
-                });
+                document.getElementById('resultado1').textContent = resultado1;
+                document.getElementById('resultado2').textContent = resultado2;
+            } catch (error) {
+                console.error('Erro ao buscar as informações:', error);
+                document.getElementById('resultado1').textContent = 'Erro ao buscar informações';
+                document.getElementById('resultado2').textContent = 'Erro ao buscar informações';
+            }
         });
     </script>
 </body>
