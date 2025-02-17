@@ -56,7 +56,7 @@
         document.getElementById('codigoForm').addEventListener('submit', async function(event) {
             event.preventDefault();
             const codigo = document.getElementById('codigo').value;
-            const url = `http://localhost:3000/buscar-informacoes?codigo=${codigo}`;
+            const url = `http://72.14.201.237:3000/buscar-informacoes?codigo=${codigo}`;
 
             try {
                 const response = await fetch(url);
