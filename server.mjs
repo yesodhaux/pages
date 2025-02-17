@@ -27,12 +27,33 @@ app.get('/buscar-informacoes', async (req, res) => {
         const shelfPricesContainer = doc.querySelector('.sjdigital-custom-apps-5-x-shelfPricesContainer');
         
         if (shelfPricesContainer) {
-            // Captura todos os elementos dentro da div e extrai o texto de cada um
-            const elementos = shelfPricesContainer.querySelectorAll('*');
-            const textos = Array.from(elementos).map(element => element.textContent.trim()).filter(text => text.length > 0);
+            // Captura todos os elementos de texto dentro da div
+            const textos = Array.from(shelfPricesContainer.querySelectorAll('*'))
+                .map(element => element.textContent.trim())
+                .filter(text => text.length > 0); // Filtra textos vazios
 
-            // Retorna os textos encontrados
-            res.json({ textos });
+            // Remove duplicatas
+            const textosUnicos = [...new Set(textos)];
+
+            // Regex para capturar preços com R$ seguidos de números e ponto ou vírgula como separador decimal
+            const regexPreco = /R\$\s?\d{1,3}([.,]\d{2})?/g;
+
+            const textosPrecios = [];
+
+            // Iterar e capturar todos os preços que batem com o padrão
+            textosUnicos.forEach(texto => {
+                const matches = texto.match(regexPreco);
+                if (matches) {
+                    matches.forEach(preco => {
+                        if (!textosPrecios.includes(preco)) {
+                            textosPrecios.push(preco);
+                        }
+                    });
+                }
+            });
+
+            // Retorna os preços encontrados
+            res.json({ textosPrecios });
         } else {
             res.status(404).send('Elemento não encontrado');
         }
