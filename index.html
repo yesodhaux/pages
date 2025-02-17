@@ -3,12 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buscar Informações</title>
+    <title>Buscar Informações e Escanear Código de Barras</title>
+    <script src="https://unpkg.com/@zxing/library@latest"></script>
+    <style>
+        video {
+            width: 100%;
+            height: auto;
+            border: 1px solid black;
+        }
+    </style>
 </head>
 <body>
     <h1>Buscar Informações da Página Alvo</h1>
     <form id="codigoForm">
-        <label for="codigo">Insira o código:</label>
+        <label for="codigo">Insira ou Escaneie o código:</label>
         <input type="text" id="codigo" name="codigo" required>
         <button type="submit">Buscar</button>
     </form>
@@ -16,7 +24,35 @@
         <p>Resultado 1: <span id="resultado1"></span></p>
         <p>Resultado 2: <span id="resultado2"></span></p>
     </div>
+    
+    <h1>Barcode Scanner</h1>
+    <video id="video"></video>
+    <button id="startButton">ESCANIAR</button>
+    <p id="scannerResult"></p>
+
     <script>
+        // Configuração do leitor de código de barras
+        const codeReader = new ZXing.BrowserBarcodeReader();
+        const videoElement = document.getElementById('video');
+        const scannerResult = document.getElementById('scannerResult');
+        const startButton = document.getElementById('startButton');
+
+        startButton.addEventListener('click', () => {
+            console.log('Start button clicked');
+            codeReader.decodeFromVideoDevice(null, videoElement, (result, err) => {
+                if (result) {
+                    document.getElementById('codigo').value = result.text;
+                    scannerResult.textContent = `Barcode result: ${result.text}`;
+                    codeReader.reset();
+                }
+                if (err && !(err instanceof ZXing.NotFoundException)) {
+                    console.error(err);
+                    scannerResult.textContent = `Error: ${err}`;
+                }
+            });
+        });
+
+        // Busca de informações da página alvo
         document.getElementById('codigoForm').addEventListener('submit', async function(event) {
             event.preventDefault();
             const codigo = document.getElementById('codigo').value;
