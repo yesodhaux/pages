@@ -3,58 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leitor de Código de Barras</title>
-    <!-- Incluindo a biblioteca barcode-qrcode-reader da CDN correta -->
-    <script src="https://cdn.jsdelivr.net/npm/barcode-qrcode-reader@1.0.4/dist/barcode-qrcode-reader.min.js"></script>
+    <title>Leitor de Código de Barras e QR Code</title>
+    <!-- Importando a biblioteca html5-qrcode -->
+    <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
 </head>
 <body>
     <h1>Leitor de Código de Barras e QR Code</h1>
     <button id="startScan">Iniciar Escaneamento</button>
     <div>
-        <video id="video" width="300" height="200" style="border: 1px solid #000;"></video>
+        <div id="reader" style="width: 300px; height: 200px;"></div>
     </div>
     <p>Resultado: <span id="result"></span></p>
 
     <script>
-        // Função para iniciar o escaneamento
+        // Função que será chamada quando clicar no botão "Iniciar Escaneamento"
         document.getElementById("startScan").addEventListener("click", function() {
-            const videoElement = document.getElementById("video");
+            const resultElement = document.getElementById("result");
 
-            // Usando o mediaDevices para acessar a câmera (preferencialmente traseira)
-            navigator.mediaDevices.getUserMedia({
-                video: {
-                    facingMode: "environment" // Preferindo a câmera traseira
-                }
-            }).then(function(stream) {
-                // Conectando o stream da câmera ao elemento de vídeo
-                videoElement.srcObject = stream;
-                videoElement.play();
+            // Usando o html5-qrcode para inicializar a leitura
+            const html5QrCode = new Html5Qrcode("reader");
 
-                // Inicializando o scanner
-                const scanner = new BarcodeQRCodeReader();
-                scanner.onDecode = function(result) {
-                    // Exibindo o resultado da leitura do código
-                    document.getElementById("result").textContent = result;
-                };
+            // Função para quando o código for lido com sucesso
+            const onScanSuccess = (decodedText, decodedResult) => {
+                resultElement.textContent = decodedText;
+                html5QrCode.stop().then(() => {
+                    console.log("Leitura concluída, scanner parado.");
+                }).catch(err => {
+                    console.log("Erro ao parar o scanner: ", err);
+                });
+            };
 
-                // Função para fazer a leitura contínua do vídeo
-                function scanVideo() {
-                    // Tenta decodificar o código do vídeo a cada quadro
-                    scanner.decodeFromVideoElement(videoElement).then(() => {
-                        // Continuar a escanear
-                        requestAnimationFrame(scanVideo);
-                    }).catch(err => {
-                        // Lidar com erros de leitura
-                        console.log("Erro ao tentar ler código:", err);
-                        requestAnimationFrame(scanVideo);  // Continuar tentando ler mesmo se falhar
-                    });
-                }
+            // Função para tratar erros de leitura
+            const onScanError = (errorMessage) => {
+                console.warn("Erro de leitura:", errorMessage);
+            };
 
-                // Iniciando o escaneamento contínuo
-                scanVideo();
+            // Configuração da câmera (preferindo a traseira)
+            const cameraConfig = {
+                facingMode: "environment" // Preferindo a câmera traseira
+            };
 
-            }).catch(function(error) {
-                alert("Erro ao acessar a câmera: " + error.message);
+            // Iniciando o scanner
+            html5QrCode.start(cameraConfig, {
+                fps: 10,    // Taxa de quadros por segundo
+                qrbox: 250  // Tamanho da área onde o QR Code será lido
+            }, onScanSuccess, onScanError).catch(err => {
+                alert("Erro ao acessar a câmera: " + err);
             });
         });
     </script>
