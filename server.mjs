@@ -1,12 +1,14 @@
 import express from 'express';
 import fetch from 'node-fetch';
 import { JSDOM } from 'jsdom';
+import https from 'https';
+import fs from 'fs';
 
 const app = express();
 
 // Middleware para adicionar cabeçalhos CORS
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*'); // Permite todas as origens
+    res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     next();
 });
@@ -30,6 +32,13 @@ app.get('/buscar-informacoes', async (req, res) => {
     }
 });
 
-app.listen(1881, () => {
-    console.log('Servidor rodando na porta 1881');
+// Carregar certificados SSL
+const options = {
+    key: fs.readFileSync('localhost-key.pem'),
+    cert: fs.readFileSync('localhost.pem')
+};
+
+// Iniciar servidor HTTPS
+https.createServer(options, app).listen(1881, () => {
+    console.log('Servidor rodando na porta 1881 com HTTPS');
 });
