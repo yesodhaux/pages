@@ -27,7 +27,7 @@
     </style>
 </head>
 <body>
-    <h1>PREÇO</h1>
+    <h1 id="titulo">Buscar Informações da Página Alvo v4</h1>
     <form id="codigoForm">
         <label for="codigo">Insira ou Escaneie o código:</label>
         <input type="text" id="codigo" name="codigo" required>
@@ -50,6 +50,9 @@
         const scannerResult = document.getElementById('scannerResult');
         const startButton = document.getElementById('startButton');
 
+        const beep = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
+        beep.volume = 1.0;
+
         startButton.addEventListener('click', () => {
             console.log('Start button clicked');
             codeReader.decodeFromVideoDevice(null, videoElement, async (result, err) => {
@@ -57,10 +60,10 @@
                     document.getElementById('codigo').value = result.text;
                     scannerResult.textContent = `Barcode result: ${result.text}`;
 
-                    // Emite um beep rápido
-                    const beep = new Audio('data:audio/wav;base64,UklGRk4AAABXQVZFZm10IBAAAAABAAEAIlYAABCxAgAEABAAZGF0YQAAAAA=');
-                    beep.volume = 1.0; // Aumenta o volume do som
-                    beep.play();
+                    // Aguarda o áudio ser carregado e emite o beep
+                    beep.addEventListener('canplaythrough', () => {
+                        beep.play();
+                    });
 
                     // Submete o formulário automaticamente
                     await buscarInformacoes(result.text);
@@ -112,6 +115,11 @@
             event.preventDefault();
             const codigo = document.getElementById('codigo').value;
             buscarInformacoes(codigo);
+        });
+
+        // Adiciona evento de clique ao título para tocar o som
+        document.getElementById('titulo').addEventListener('click', () => {
+            beep.play();
         });
     </script>
 </body>
