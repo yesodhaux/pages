@@ -60,10 +60,9 @@
                     document.getElementById('codigo').value = result.text;
                     scannerResult.textContent = `Barcode result: ${result.text}`;
 
-                    // Aguarda o áudio ser carregado e emite o beep
-                    beep.addEventListener('canplaythrough', () => {
-                        beep.play();
-                    });
+                    // Emite um beep rápido
+                    beep.currentTime = 0;
+                    beep.play();
 
                     // Submete o formulário automaticamente
                     await buscarInformacoes(result.text);
