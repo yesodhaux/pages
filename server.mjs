@@ -23,14 +23,14 @@ app.get('/buscar-informacoes', async (req, res) => {
         const dom = new JSDOM(htmlText);
         const doc = dom.window.document;
         
-        // Captura do conteúdo das duas classes
-        const resultado1 = doc.querySelector('.sjdigital-custom-apps-5-x-listPriceValue.strike')?.textContent.trim();
-        const resultado2 = doc.querySelector('.sjdigital-custom-apps-5-x-sellingPriceValue')?.textContent.trim();
-
-        if (resultado1 && resultado2) {
-            res.json({ resultado1, resultado2 });
+        // Captura do conteúdo da div com a classe 'sjdigital-custom-apps-5-x-shelfPricesContainer'
+        const shelfPricesContainer = doc.querySelector('.sjdigital-custom-apps-5-x-shelfPricesContainer');
+        
+        if (shelfPricesContainer) {
+            // Retorna o conteúdo completo dentro da div
+            res.json({ conteúdo: shelfPricesContainer.innerHTML.trim() });
         } else {
-            res.status(404).send('Elementos não encontrados');
+            res.status(404).send('Elemento não encontrado');
         }
     } catch (error) {
         console.error('Erro ao buscar as informações:', error);
