@@ -23,12 +23,16 @@ app.get('/buscar-informacoes', async (req, res) => {
         const dom = new JSDOM(htmlText);
         const doc = dom.window.document;
         
-        // Captura do conteúdo da div com a classe 'sjdigital-custom-apps-5-x-shelfPricesContainer'
+        // Captura o conteúdo da div com a classe 'sjdigital-custom-apps-5-x-shelfPricesContainer'
         const shelfPricesContainer = doc.querySelector('.sjdigital-custom-apps-5-x-shelfPricesContainer');
         
         if (shelfPricesContainer) {
-            // Retorna o conteúdo completo dentro da div
-            res.json({ conteúdo: shelfPricesContainer.innerHTML.trim() });
+            // Captura todos os elementos dentro da div e extrai o texto de cada um
+            const elementos = shelfPricesContainer.querySelectorAll('*');
+            const textos = Array.from(elementos).map(element => element.textContent.trim()).filter(text => text.length > 0);
+
+            // Retorna os textos encontrados
+            res.json({ textos });
         } else {
             res.status(404).send('Elemento não encontrado');
         }
