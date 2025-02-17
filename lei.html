@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leitor de Código de Barras</title>
+    <script src="https://cdn.jsdelivr.net/npm/barcode-qrcode-reader@1.0.3/dist/barcode-qrcode-reader.min.js"></script>
+</head>
+<body>
+    <h1>Leitor de Código de Barras e QR Code</h1>
+    <button id="startScan">Iniciar Escaneamento</button>
+    <div>
+        <video id="video" width="300" height="200" style="border: 1px solid #000;"></video>
+    </div>
+    <p>Resultado: <span id="result"></span></p>
+
+    <script>
+        document.getElementById("startScan").addEventListener("click", function() {
+            // Acessando a câmera do celular
+            const videoElement = document.getElementById("video");
+
+            // Usando a API do navegador para acessar a câmera
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function(stream) {
+                    videoElement.srcObject = stream;
+                    videoElement.play();
+
+                    // Usando o BarcodeQRCodeReader para ler o código
+                    const scanner = new BarcodeQRCodeReader();
+                    scanner.onDecode = function(result) {
+                        // Exibindo o resultado no elemento
+                        document.getElementById("result").textContent = result;
+                    };
+
+                    // Função para ler o vídeo constantemente
+                    function scanVideo() {
+                        scanner.decodeFromVideoElement(videoElement)
+                            .then(() => {
+                                // Chama novamente para continuar a leitura
+                                requestAnimationFrame(scanVideo);
+                            });
+                    }
+
+                    // Iniciar a leitura contínua
+                    scanVideo();
+                })
+                .catch(function(error) {
+                    alert("Erro ao acessar a câmera: " + error.message);
+                });
+        });
+    </script>
+</body>
+</html>
