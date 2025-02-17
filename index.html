@@ -14,7 +14,7 @@
     </style>
 </head>
 <body>
-    <h1>Buscar Informações da Página Alvo v2</h1>
+    <h1>Buscar Informações da Página Alvo v3</h1>
     <form id="codigoForm">
         <label for="codigo">Insira ou Escaneie o código:</label>
         <input type="text" id="codigo" name="codigo" required>
@@ -56,7 +56,7 @@
         document.getElementById('codigoForm').addEventListener('submit', async function(event) {
             event.preventDefault();
             const codigo = document.getElementById('codigo').value;
-            const url = `http://200.170.119.177:8888/buscar-informacoes?codigo=${codigo}`;
+            const url = `http://200.170.119.177:1881/buscar-informacoes?codigo=${codigo}`;
 
             try {
                 const response = await fetch(url);
