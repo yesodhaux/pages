@@ -30,6 +30,6 @@ app.get('/buscar-informacoes', async (req, res) => {
     }
 });
 
-app.listen(8888, () => {
-    console.log('Servidor rodando na porta 8888');
+app.listen(1881, () => {
+    console.log('Servidor rodando na porta 1881');
 });
