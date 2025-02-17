@@ -58,7 +58,8 @@
                     scannerResult.textContent = `Barcode result: ${result.text}`;
 
                     // Emite um beep rápido
-                    const beep = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAABCxAgAEABAAZGF0YQAAAAA=');
+                    const beep = new Audio('data:audio/wav;base64,UklGRk4AAABXQVZFZm10IBAAAAABAAEAIlYAABCxAgAEABAAZGF0YQAAAAA=');
+                    beep.volume = 1.0; // Aumenta o volume do som
                     beep.play();
 
                     // Submete o formulário automaticamente
