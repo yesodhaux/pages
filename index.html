@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buscar Informações e Escanear Código de Barras</title>
-    <script src="https://unpkg.com/@zxing/library@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
     <style>
         video {
             width: 100%;
@@ -29,51 +29,61 @@
 <body>
     <h1 id="titulo">PREÇO</h1>
     <form id="codigoForm">
-       
         <input type="text" id="codigo" name="codigo" required>
         <button type="submit">Buscar</button>
     </form>
     <div id="resultados">
-       
         <ul id="precosList"></ul> <!-- Lista de preços -->
     </div>
     
-   
-    <video id="video"></video>
+    <video id="video" autoplay></video>
     <button id="startButton">SCAN</button>
     <p id="scannerResult"></p>
 
     <script>
-        // Configuração do leitor de código de barras
-        const codeReader = new ZXing.BrowserBarcodeReader();
-        const videoElement = document.getElementById('video');
+        // Configuração do leitor de código de barras com QuaggaJS
         const scannerResult = document.getElementById('scannerResult');
         const startButton = document.getElementById('startButton');
+        const videoElement = document.getElementById('video');
 
         const beep = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
         beep.volume = 1.0;
 
-        startButton.addEventListener('click', () => {
-            console.log('Start button clicked');
-            codeReader.decodeFromVideoDevice(null, videoElement, async (result, err) => {
-                if (result) {
-                    document.getElementById('codigo').value = result.text;
-                    scannerResult.textContent = `Barcode result: ${result.text}`;
-
-                    // Emite um beep rápido
-                    beep.currentTime = 0;
-                    beep.play();
-
-                    // Submete o formulário automaticamente
-                    await buscarInformacoes(result.text);
-                    codeReader.reset();
+        function startScanner() {
+            Quagga.init({
+                inputStream: {
+                    name: "Live",
+                    type: "LiveStream",
+                    target: videoElement,
+                    constraints: {
+                        facingMode: "environment" // ou "user" para câmera frontal
+                    }
+                },
+                decoder: {
+                    readers: ["code_128_reader", "ean_reader", "ean_8_reader", "code_39_reader", "code_39_vin_reader", "codabar_reader", "upc_reader", "upc_e_reader", "i2of5_reader"]
                 }
-                if (err && !(err instanceof ZXing.NotFoundException)) {
+            }, (err) => {
+                if (err) {
                     console.error(err);
-                    scannerResult.textContent = `Error: ${err}`;
+                    return;
                 }
+                console.log("QuaggaJS iniciado com sucesso");
+                Quagga.start();
             });
-        });
+
+            Quagga.onDetected(async (data) => {
+                document.getElementById('codigo').value = data.codeResult.code;
+                scannerResult.textContent = `Barcode result: ${data.codeResult.code}`;
+
+                // Emite um beep rápido
+                beep.currentTime = 0;
+                beep.play();
+
+                // Submete o formulário automaticamente
+                await buscarInformacoes(data.codeResult.code);
+                Quagga.stop();
+            });
+        }
 
         async function buscarInformacoes(codigo) {
             const url = `https://200.170.119.177:1881/buscar-informacoes?codigo=${codigo}`;
@@ -120,6 +130,9 @@
         document.getElementById('titulo').addEventListener('click', () => {
             beep.play();
         });
+
+        // Inicia o scanner quando o botão é clicado
+        startButton.addEventListener('click', startScanner);
     </script>
 </body>
 </html>
