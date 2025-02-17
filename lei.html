@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leitor de Código de Barras</title>
-    <script src="https://cdn.jsdelivr.net/npm/barcode-qrcode-reader@1.0.3/dist/barcode-qrcode-reader.min.js"></script>
+    <!-- Incluindo a biblioteca barcode-qrcode-reader da CDN correta -->
+    <script src="https://cdn.jsdelivr.net/npm/barcode-qrcode-reader@1.0.4/dist/barcode-qrcode-reader.min.js"></script>
 </head>
 <body>
     <h1>Leitor de Código de Barras e QR Code</h1>
@@ -38,12 +39,14 @@
 
                 // Função para fazer a leitura contínua do vídeo
                 function scanVideo() {
+                    // Tenta decodificar o código do vídeo a cada quadro
                     scanner.decodeFromVideoElement(videoElement).then(() => {
                         // Continuar a escanear
                         requestAnimationFrame(scanVideo);
                     }).catch(err => {
                         // Lidar com erros de leitura
                         console.log("Erro ao tentar ler código:", err);
+                        requestAnimationFrame(scanVideo);  // Continuar tentando ler mesmo se falhar
                     });
                 }
 
