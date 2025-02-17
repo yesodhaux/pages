@@ -15,4 +15,45 @@
     <p>Resultado: <span id="result"></span></p>
 
     <script>
-        document.get
+        // Função para iniciar o escaneamento
+        document.getElementById("startScan").addEventListener("click", function() {
+            const videoElement = document.getElementById("video");
+
+            // Usando o mediaDevices para acessar a câmera (preferencialmente traseira)
+            navigator.mediaDevices.getUserMedia({
+                video: {
+                    facingMode: "environment" // Preferindo a câmera traseira
+                }
+            }).then(function(stream) {
+                // Conectando o stream da câmera ao elemento de vídeo
+                videoElement.srcObject = stream;
+                videoElement.play();
+
+                // Inicializando o scanner
+                const scanner = new BarcodeQRCodeReader();
+                scanner.onDecode = function(result) {
+                    // Exibindo o resultado da leitura do código
+                    document.getElementById("result").textContent = result;
+                };
+
+                // Função para fazer a leitura contínua do vídeo
+                function scanVideo() {
+                    scanner.decodeFromVideoElement(videoElement).then(() => {
+                        // Continuar a escanear
+                        requestAnimationFrame(scanVideo);
+                    }).catch(err => {
+                        // Lidar com erros de leitura
+                        console.log("Erro ao tentar ler código:", err);
+                    });
+                }
+
+                // Iniciando o escaneamento contínuo
+                scanVideo();
+
+            }).catch(function(error) {
+                alert("Erro ao acessar a câmera: " + error.message);
+            });
+        });
+    </script>
+</body>
+</html>
