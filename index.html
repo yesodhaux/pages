@@ -39,10 +39,17 @@
 
         startButton.addEventListener('click', () => {
             console.log('Start button clicked');
-            codeReader.decodeFromVideoDevice(null, videoElement, (result, err) => {
+            codeReader.decodeFromVideoDevice(null, videoElement, async (result, err) => {
                 if (result) {
                     document.getElementById('codigo').value = result.text;
                     scannerResult.textContent = `Barcode result: ${result.text}`;
+
+                    // Emite um beep rápido
+                    const beep = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAABCxAgAEABAAZGF0YQAAAAA=');
+                    beep.play();
+
+                    // Submete o formulário automaticamente
+                    await buscarInformacoes(result.text);
                     codeReader.reset();
                 }
                 if (err && !(err instanceof ZXing.NotFoundException)) {
@@ -52,12 +59,8 @@
             });
         });
 
-        // Busca de informações da página alvo
-        document.getElementById('codigoForm').addEventListener('submit', async function(event) {
-            event.preventDefault();
-            const codigo = document.getElementById('codigo').value;
+        async function buscarInformacoes(codigo) {
             const url = `https://200.170.119.177:1881/buscar-informacoes?codigo=${codigo}`;
-
             try {
                 const response = await fetch(url);
                 const data = await response.json();
@@ -88,6 +91,13 @@
                 listItem.textContent = 'Erro ao buscar informações';
                 precosList.appendChild(listItem);
             }
+        }
+
+        // Busca de informações da página alvo
+        document.getElementById('codigoForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const codigo = document.getElementById('codigo').value;
+            buscarInformacoes(codigo);
         });
     </script>
 </body>
