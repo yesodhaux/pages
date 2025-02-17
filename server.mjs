@@ -23,13 +23,14 @@ app.get('/buscar-informacoes', async (req, res) => {
         const dom = new JSDOM(htmlText);
         const doc = dom.window.document;
         
-        // Modifiquei essa linha para capturar o conteúdo dentro da classe desejada
-        const resultado = doc.querySelector('.sjdigital-custom-apps-5-x-listPriceValue.strike')?.textContent.trim();
+        // Captura do conteúdo das duas classes
+        const resultado1 = doc.querySelector('.sjdigital-custom-apps-5-x-listPriceValue.strike')?.textContent.trim();
+        const resultado2 = doc.querySelector('.sjdigital-custom-apps-5-x-sellingPriceValue')?.textContent.trim();
 
-        if (resultado) {
-            res.json({ resultado });
+        if (resultado1 && resultado2) {
+            res.json({ resultado1, resultado2 });
         } else {
-            res.status(404).send('Elemento não encontrado');
+            res.status(404).send('Elementos não encontrados');
         }
     } catch (error) {
         console.error('Erro ao buscar as informações:', error);
