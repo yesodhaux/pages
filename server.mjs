@@ -22,10 +22,15 @@ app.get('/buscar-informacoes', async (req, res) => {
         const htmlText = await response.text();
         const dom = new JSDOM(htmlText);
         const doc = dom.window.document;
-        const resultado1 = doc.querySelector('.sjdigital-custom-apps-5-x-currencyInteger').textContent.trim();
-        const resultado2 = doc.querySelector('.sjdigital-custom-apps-5-x-currencyFraction').textContent.trim();
+        
+        // Modifiquei essa linha para capturar o conteúdo dentro da classe desejada
+        const resultado = doc.querySelector('.sjdigital-custom-apps-5-x-listPriceValue.strike')?.textContent.trim();
 
-        res.json({ resultado1, resultado2 });
+        if (resultado) {
+            res.json({ resultado });
+        } else {
+            res.status(404).send('Elemento não encontrado');
+        }
     } catch (error) {
         console.error('Erro ao buscar as informações:', error);
         res.status(500).send('Erro ao buscar informações');
