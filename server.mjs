@@ -69,7 +69,12 @@ const options = {
     cert: fs.readFileSync('localhost.pem')
 };
 
+// Iniciar servidor HTTP
+app.listen(1880, () => {
+    console.log('Servidor HTTP rodando na porta 1880');
+});
+
 // Iniciar servidor HTTPS
 https.createServer(options, app).listen(1881, () => {
-    console.log('Servidor rodando na porta 1881 com HTTPS');
+    console.log('Servidor HTTPS rodando na porta 1881');
 });

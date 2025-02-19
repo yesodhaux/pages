@@ -27,7 +27,7 @@
     </style>
 </head>
 <body>
-    <h1 id="titulo">PREÇO</h1>
+    <h1 id="titulo">preco</h1>
     <form id="codigoForm">
        
         <input type="text" id="codigo" name="codigo" required>
@@ -76,7 +76,7 @@
         });
 
         async function buscarInformacoes(codigo) {
-            const url = `https://200.170.119.177:1881/buscar-informacoes?codigo=${codigo}`;
+            const url = `https://leoio.sytes.net:1881/buscar-informacoes?codigo=${codigo}`;
             try {
                 const response = await fetch(url);
                 const data = await response.json();
