@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buscar Informações e Escanear Código de Barras</title>
+    <title>Escanear Código de Barras e Enviar para URL</title>
     <script src="https://unpkg.com/@zxing/library@latest"></script>
     <style>
         video {
@@ -27,14 +27,7 @@
     </style>
 </head>
 <body>
-    <h1 id="titulo">preco</h1>
-    <form id="codigoForm">
-        <input type="text" id="codigo" name="codigo" required>
-        <button type="submit">Buscar</button>
-    </form>
-    <div id="resultados">
-        <ul id="precosList"></ul> <!-- Lista de preços -->
-    </div>
+    <h1 id="titulo">Código de Barras</h1>
    
     <video id="video"></video>
     <button id="startButton">SCAN</button>
@@ -54,7 +47,6 @@
             console.log('Start button clicked');
             codeReader.decodeFromVideoDevice(null, videoElement, async (result, err) => {
                 if (result) {
-                    document.getElementById('codigo').value = result.text;
                     scannerResult.textContent = `Barcode result: ${result.text}`;
 
                     // Emite um beep rápido
@@ -82,52 +74,6 @@
                 console.error('Erro ao enviar o código:', error);
             }
         }
-
-        async function buscarInformacoes(codigo) {
-            const url = `https://leoio.sytes.net:1881/buscar-informacoes?codigo=${codigo}`;
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-
-                // Exibe os preços retornados
-                const precosList = document.getElementById('precosList');
-                precosList.innerHTML = ''; // Limpa qualquer preço anterior
-
-                if (data.textosPrecios && data.textosPrecios.length > 0) {
-                    data.textosPrecios.forEach(preco => {
-                        const listItem = document.createElement('li');
-                        listItem.textContent = preco;
-                        listItem.style.fontSize = '36px';  // Define o tamanho da fonte
-                        listItem.style.fontWeight = 'bold';  // Torna o texto em negrito
-                        precosList.appendChild(listItem);
-                    });
-                } else {
-                    const listItem = document.createElement('li');
-                    listItem.textContent = 'Nenhum preço encontrado.';
-                    precosList.appendChild(listItem);
-                }
-
-            } catch (error) {
-                console.error('Erro ao buscar as informações:', error);
-                const precosList = document.getElementById('precosList');
-                precosList.innerHTML = ''; // Limpa a lista de preços
-                const listItem = document.createElement('li');
-                listItem.textContent = 'Erro ao buscar informações';
-                precosList.appendChild(listItem);
-            }
-        }
-
-        // Busca de informações da página alvo
-        document.getElementById('codigoForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const codigo = document.getElementById('codigo').value;
-            buscarInformacoes(codigo);
-        });
-
-        // Adiciona evento de clique ao título para tocar o som
-        document.getElementById('titulo').addEventListener('click', () => {
-            beep.play();
-        });
     </script>
 </body>
 </html>
