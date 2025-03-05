@@ -65,7 +65,7 @@
         });
 
         async function enviarCodigo(codigo) {
-            const url = `http://10.4.147.52:5000/type/${codigo}`;
+            const url = `https://10.4.147.52:5000/type/${codigo}`;
             try {
                 const response = await fetch(url);
                 const data = await response.text();
