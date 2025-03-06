@@ -24,14 +24,18 @@
         #startButton:hover {
             background-color: #45a049;
         }
+        #cameraSelect {
+            margin: 20px 0;
+        }
     </style>
 </head>
 <body>
-    <h1 id="titulo">Código de Barras</h1>
-   
+    <h1 id="titulo">V1</h1>
+
     <video id="video"></video>
     <button id="startButton">SCAN</button>
     <p id="scannerResult"></p>
+    <select id="cameraSelect"></select> <!-- Dropdown para selecionar a câmera -->
 
     <script>
         // Configuração do leitor de código de barras
@@ -39,13 +43,40 @@
         const videoElement = document.getElementById('video');
         const scannerResult = document.getElementById('scannerResult');
         const startButton = document.getElementById('startButton');
+        const cameraSelect = document.getElementById('cameraSelect'); // Seletor da câmera
 
         const beep = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
         beep.volume = 1.0;
 
+        // Obter as câmeras disponíveis
+        async function obterCameras() {
+            try {
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                const videoDevices = devices.filter(device => device.kind === 'videoinput');
+                
+                if (videoDevices.length > 0) {
+                    videoDevices.forEach((device, index) => {
+                        const option = document.createElement('option');
+                        option.value = device.deviceId;
+                        option.textContent = device.label || `Câmera ${index + 1}`;
+                        cameraSelect.appendChild(option);
+                    });
+                    // Selecione a primeira câmera como padrão
+                    cameraSelect.value = videoDevices[0].deviceId;
+                } else {
+                    console.error('Nenhuma câmera encontrada');
+                }
+            } catch (error) {
+                console.error('Erro ao obter câmeras:', error);
+            }
+        }
+
+        // Iniciar a leitura do código de barras com a câmera selecionada
         startButton.addEventListener('click', () => {
-            console.log('Start button clicked');
-            codeReader.decodeFromVideoDevice(null, videoElement, async (result, err) => {
+            const selectedCameraId = cameraSelect.value;
+            console.log('Câmera selecionada:', selectedCameraId);
+
+            codeReader.decodeFromVideoDevice(selectedCameraId, videoElement, async (result, err) => {
                 if (result) {
                     scannerResult.textContent = `Barcode result: ${result.text}`;
 
@@ -64,6 +95,7 @@
             });
         });
 
+        // Função para enviar o código de barras para a URL
         async function enviarCodigo(codigo) {
             const url = `https://10.4.147.52:5000/type/${codigo}`;
             try {
@@ -74,6 +106,10 @@
                 console.error('Erro ao enviar o código:', error);
             }
         }
+
+        // Carregar as câmeras disponíveis ao iniciar a página
+        window.onload = obterCameras;
+
     </script>
 </body>
 </html>
