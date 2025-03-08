@@ -119,21 +119,17 @@
                 const precosList = document.getElementById('precosList');
                 precosList.innerHTML = ''; // Limpa qualquer preço anterior
 
-                if (data.resultado1 && data.resultado2) {
-                    const listItem1 = document.createElement('li');
-                    listItem1.textContent = `Parte Inteira: ${data.resultado1}`;
-                    listItem1.style.fontSize = '36px';
-                    listItem1.style.fontWeight = 'bold';
-                    precosList.appendChild(listItem1);
-
-                    const listItem2 = document.createElement('li');
-                    listItem2.textContent = `Parte Decimal: ${data.resultado2}`;
-                    listItem2.style.fontSize = '36px';
-                    listItem2.style.fontWeight = 'bold';
-                    precosList.appendChild(listItem2);
+                if (data.textosPrecios && data.textosPrecios.length > 0) {
+                    data.textosPrecios.forEach(preco => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = preco; // Exibe cada preço encontrado
+                        listItem.style.fontSize = '36px'; // Define tamanho da fonte
+                        listItem.style.fontWeight = 'bold'; // Torna o texto em negrito
+                        precosList.appendChild(listItem);
+                    });
                 } else {
                     const listItem = document.createElement('li');
-                    listItem.textContent = 'Nenhuma informação encontrada.';
+                    listItem.textContent = 'Nenhum preço encontrado.';
                     precosList.appendChild(listItem);
                 }
 
