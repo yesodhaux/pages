@@ -70,11 +70,11 @@ const options = {
 };
 
 // Iniciar servidor HTTP
-app.listen(1880, () => {
+app.listen(8080, () => {
     console.log('Servidor HTTP rodando na porta 1880');
 });
 
 // Iniciar servidor HTTPS
-https.createServer(options, app).listen(1881, () => {
+https.createServer(options, app).listen(80, () => {
     console.log('Servidor HTTPS rodando na porta 1881');
 });
