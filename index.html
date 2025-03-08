@@ -35,7 +35,7 @@
 <body>
     <h1 id="titulo">Preço v2</h1>
     <form id="codigoForm">
-        <input type="text" id="codigo" name="codigo" required>
+        <input type="text" id="codigo" name="codigo" placeholder="Digite o código ou escaneie" required>
         <button type="submit">Buscar</button>
     </form>
     <div id="resultados">
@@ -91,7 +91,7 @@
             codeReader.decodeFromVideoDevice(selectedCameraId, videoElement, async (result, err) => {
                 if (result) {
                     document.getElementById('codigo').value = result.text;
-                    scannerResult.textContent = `Barcode result: ${result.text}`;
+                    scannerResult.textContent = `Resultado do código: ${result.text}`;
 
                     // Emite um beep rápido
                     beep.currentTime = 0;
@@ -103,38 +103,40 @@
                 }
                 if (err && !(err instanceof ZXing.NotFoundException)) {
                     console.error(err);
-                    scannerResult.textContent = `Error: ${err}`;
+                    scannerResult.textContent = `Erro: ${err}`;
                 }
             });
         });
 
         async function buscarInformacoes(codigo) {
-            // Atualize a URL para sua API
             const url = `https://bmo-two.vercel.app/api/leo?codigo=${codigo}`;
             try {
+                console.log(`[INFO] Buscando informações para o código: ${codigo}`);
                 const response = await fetch(url);
                 const data = await response.json();
+                console.log(`[INFO] Resposta da API:`, data);
 
                 // Exibe os resultados retornados da API
                 const precosList = document.getElementById('precosList');
                 precosList.innerHTML = ''; // Limpa qualquer preço anterior
 
                 if (data.textosPrecios && data.textosPrecios.length > 0) {
+                    console.log(`[INFO] Preços recebidos: ${data.textosPrecios.join(', ')}`);
                     data.textosPrecios.forEach(preco => {
                         const listItem = document.createElement('li');
                         listItem.textContent = preco; // Exibe cada preço encontrado
-                        listItem.style.fontSize = '36px'; // Define tamanho da fonte
-                        listItem.style.fontWeight = 'bold'; // Torna o texto em negrito
+                        listItem.style.fontSize = '36px';
+                        listItem.style.fontWeight = 'bold';
                         precosList.appendChild(listItem);
                     });
                 } else {
+                    console.warn(`[WARN] Nenhum preço encontrado para o código ${codigo}.`);
                     const listItem = document.createElement('li');
                     listItem.textContent = 'Nenhum preço encontrado.';
                     precosList.appendChild(listItem);
                 }
-
             } catch (error) {
-                console.error('Erro ao buscar as informações:', error);
+                console.error('[ERROR] Erro ao buscar as informações:', error);
                 const precosList = document.getElementById('precosList');
                 precosList.innerHTML = ''; // Limpa a lista de preços
                 const listItem = document.createElement('li');
