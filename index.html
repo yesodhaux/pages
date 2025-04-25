@@ -3,162 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buscar Informações e Escanear Código de Barras</title>
-    <script src="https://unpkg.com/@zxing/library@latest"></script>
-    <style>
-        video {
-            width: 100%;
-            height: auto;
-            border: 1px solid black;
-        }
-        #startButton {
-            width: 100%;
-            padding: 20px;
-            font-size: 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        #startButton:hover {
-            background-color: #45a049;
-        }
-        #cameraSelect {
-            margin: 20px 0;
-            width: 100%;
-            padding: 10px;
-            font-size: 18px;
-        }
-    </style>
+    <title>BeeMo - Agentes de IA com N8N</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    <h1 id="titulo">BMO</h1>
-    <form id="codigoForm">
-        <input type="text" id="codigo" name="codigo" placeholder="Digite o código ou escaneie" required>
-        <button type="submit">Buscar</button>
-    </form>
-    <div id="resultados">
-        <ul id="precosList"></ul> <!-- Lista de preços -->
-    </div>
+<body class="bg-gray-50 font-sans leading-normal tracking-normal">
 
-    <!-- Seletor de câmeras -->
-    <select id="cameraSelect"></select>
+    <header class="bg-gradient-to-r from-purple-600 to-indigo-700 text-white py-10 shadow-lg">
+        <div class="container mx-auto text-center">
+            <h1 class="text-5xl font-extrabold mb-2">BeeMo</h1>
+            <p class="text-2xl">Agentes de IA + N8N = Automação Inteligente</p>
+        </div>
+    </header>
 
-    <video id="video"></video>
-    <button id="startButton">SCAN</button>
-    <p id="scannerResult"></p>
+    <main class="container mx-auto py-16 px-4 space-y-20">
 
-    <script>
-        // Configuração do leitor de código de barras
-        const codeReader = new ZXing.BrowserBarcodeReader();
-        const videoElement = document.getElementById('video');
-        const scannerResult = document.getElementById('scannerResult');
-        const startButton = document.getElementById('startButton');
-        const cameraSelect = document.getElementById('cameraSelect'); // Seletor de câmera
+        <section class="text-center">
+            <h2 class="text-4xl font-bold mb-6">Transforme processos em automações inteligentes</h2>
+            <img src="https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=400" alt="Automação com IA" class="rounded-xl shadow-xl mx-auto mb-6 w-full max-w-4xl">
+            <p class="text-gray-700 max-w-3xl mx-auto mb-8">
+                BeeMo é especializada em criar agentes de IA sob medida para o seu negócio. Combinando inteligência artificial com a poderosa ferramenta de automação N8N, entregamos soluções que pensam, agem e aprendem.
+            </p>
+            <button onclick="alert('Contato via WhatsApp: (92) 99473-7668')" class="bg-indigo-700 text-white text-lg font-semibold py-3 px-8 rounded-full hover:bg-indigo-600 transition">
+                Fale com a BeeMo
+            </button>
+        </section>
 
-        const beep = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
-        beep.volume = 1.0;
+        <section>
+            <h2 class="text-3xl font-bold text-center mb-10">O que são Agentes de IA?</h2>
+            <div class="grid md:grid-cols-2 gap-10 items-center">
+                <img src="https://images.pexels.com/photos/8439000/pexels-photo-8439000.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=400" alt="Agente de IA" class="rounded-xl shadow-xl">
+                <div class="text-gray-700 text-lg">
+                    Agentes de IA são programas inteligentes que executam tarefas de forma autônoma, aprendendo com dados e interações. Eles substituem tarefas repetitivas, analisam informações em tempo real e tomam decisões automatizadas com base em objetivos definidos.
+                    <br><br>
+                    Com BeeMo, esses agentes são integrados a sistemas e fluxos que você já usa.
+                </div>
+            </div>
+        </section>
 
-        // Obter as câmeras disponíveis
-        async function obterCameras() {
-            try {
-                const devices = await navigator.mediaDevices.enumerateDevices();
-                const videoDevices = devices.filter(device => device.kind === 'videoinput');
-                
-                if (videoDevices.length > 0) {
-                    videoDevices.forEach((device, index) => {
-                        const option = document.createElement('option');
-                        option.value = device.deviceId;
-                        option.textContent = device.label || `Câmera ${index + 1}`;
-                        cameraSelect.appendChild(option);
-                    });
-                    // Selecione a primeira câmera como padrão
-                    cameraSelect.value = videoDevices[0].deviceId;
-                } else {
-                    console.error('Nenhuma câmera encontrada');
-                }
-            } catch (error) {
-                console.error('Erro ao obter câmeras:', error);
-            }
-        }
+        <section>
+            <h2 class="text-3xl font-bold text-center mb-10">Por que N8N?</h2>
+            <div class="grid md:grid-cols-2 gap-10 items-center">
+                <div class="text-gray-700 text-lg">
+                    O N8N é uma plataforma de automação visual, open-source, que permite criar fluxos de trabalho sem escrever código. Com ele, você conecta APIs, bancos de dados, CRMs, e muito mais.
+                    <br><br>
+                    A BeeMo usa o N8N como base para conectar os agentes de IA a mais de 200 integrações e criar fluxos dinâmicos e inteligentes sob demanda.
+                </div>
+                <img src="https://images.pexels.com/photos/5380645/pexels-photo-5380645.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=400" alt="Fluxo no N8N" class="rounded-xl shadow-xl">
+            </div>
+        </section>
 
-        // Iniciar a leitura do código de barras com a câmera selecionada
-        startButton.addEventListener('click', () => {
-            const selectedCameraId = cameraSelect.value;
-            console.log('Câmera selecionada:', selectedCameraId);
+        <section class="bg-white py-12 px-6 rounded-xl shadow-lg">
+            <h2 class="text-3xl font-bold text-center mb-8">Casos de Uso</h2>
+            <div class="grid md:grid-cols-3 gap-8 text-center">
+                <div class="bg-gray-100 p-6 rounded-xl shadow">
+                    <h3 class="font-semibold text-xl mb-2">Atendimento automático</h3>
+                    <p>IA responde clientes em tempo real por WhatsApp ou e-mail.</p>
+                </div>
+                <div class="bg-gray-100 p-6 rounded-xl shadow">
+                    <h3 class="font-semibold text-xl mb-2">Relatórios inteligentes</h3>
+                    <p>Geração de relatórios com análise de dados via API e IA.</p>
+                </div>
+                <div class="bg-gray-100 p-6 rounded-xl shadow">
+                    <h3 class="font-semibold text-xl mb-2">Integrações de sistemas</h3>
+                    <p>Conecte seus sistemas legados com soluções modernas.</p>
+                </div>
+            </div>
+        </section>
 
-            codeReader.decodeFromVideoDevice(selectedCameraId, videoElement, async (result, err) => {
-                if (result) {
-                    document.getElementById('codigo').value = result.text;
-                    scannerResult.textContent = `Resultado do código: ${result.text}`;
+    </main>
 
-                    // Emite um beep rápido
-                    beep.currentTime = 0;
-                    beep.play();
+    <footer class="bg-gray-100 py-6 text-center text-sm text-gray-600">
+        <p>CNPJ: 54.897.675/0001-04</p>
+        <p>&copy; 2025 BeeMo. Todos os direitos reservados.</p>
+    </footer>
 
-                    // Submete o formulário automaticamente
-                    await buscarInformacoes(result.text);
-                    codeReader.reset();
-                }
-                if (err && !(err instanceof ZXing.NotFoundException)) {
-                    console.error(err);
-                    scannerResult.textContent = `Erro: ${err}`;
-                }
-            });
-        });
-
-        async function buscarInformacoes(codigo) {
-            const url = `https://bmo-two.vercel.app/api/leo?codigo=${codigo}`;
-            try {
-                console.log(`[INFO] Buscando informações para o código: ${codigo}`);
-                const response = await fetch(url);
-                const data = await response.json();
-                console.log(`[INFO] Resposta da API:`, data);
-
-                // Exibe os resultados retornados da API
-                const precosList = document.getElementById('precosList');
-                precosList.innerHTML = ''; // Limpa qualquer preço anterior
-
-                if (data.textosPrecios && data.textosPrecios.length > 0) {
-                    console.log(`[INFO] Preços recebidos: ${data.textosPrecios.join(', ')}`);
-                    data.textosPrecios.forEach(preco => {
-                        const listItem = document.createElement('li');
-                        listItem.textContent = preco; // Exibe cada preço encontrado
-                        listItem.style.fontSize = '36px';
-                        listItem.style.fontWeight = 'bold';
-                        precosList.appendChild(listItem);
-                    });
-                } else {
-                    console.warn(`[WARN] Nenhum preço encontrado para o código ${codigo}.`);
-                    const listItem = document.createElement('li');
-                    listItem.textContent = 'Nenhum preço encontrado.';
-                    precosList.appendChild(listItem);
-                }
-            } catch (error) {
-                console.error('[ERROR] Erro ao buscar as informações:', error);
-                const precosList = document.getElementById('precosList');
-                precosList.innerHTML = ''; // Limpa a lista de preços
-                const listItem = document.createElement('li');
-                listItem.textContent = 'Erro ao buscar informações';
-                precosList.appendChild(listItem);
-            }
-        }
-
-        // Busca de informações da página alvo
-        document.getElementById('codigoForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const codigo = document.getElementById('codigo').value;
-            buscarInformacoes(codigo);
-        });
-
-        // Adiciona evento de clique ao título para tocar o som
-        document.getElementById('titulo').addEventListener('click', () => {
-            beep.play();
-        });
-
-        // Carregar as câmeras disponíveis ao iniciar a página
-        window.onload = obterCameras;
-    </script>
 </body>
 </html>
